@@ -18,7 +18,7 @@ class QRScannerController: UIViewController {
     
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var qrCodeFrameView: UIView?
-
+    
     private let supportedCodeTypes = [AVMetadataObject.ObjectType.upce,
                                       AVMetadataObject.ObjectType.code39,
                                       AVMetadataObject.ObjectType.code39Mod43,
@@ -32,7 +32,7 @@ class QRScannerController: UIViewController {
                                       AVMetadataObject.ObjectType.dataMatrix,
                                       AVMetadataObject.ObjectType.interleaved2of5,
                                       AVMetadataObject.ObjectType.qr]
-   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -102,23 +102,41 @@ class QRScannerController: UIViewController {
         if presentedViewController != nil {
             return
         }
-        NSLog("%0.4f", decodedURL)
-        let alertPrompt = UIAlertController(title: "Open App", message: "You're going to open \(decodedURL)", preferredStyle: .actionSheet)
+        /**let alertPrompt = UIAlertController(title: "Open App", message: "You're going to open \(decodedURL)", preferredStyle: .actionSheet)
         let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertActionStyle.default, handler: { (action) -> Void in
             
             if let url = URL(string: decodedURL) {
                 if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    //UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }else{
+                    //let url2 = URL(string: "https://www.google.com/search?q=" + decodedURL)
+                    //UIApplication.shared.open(url2!, options: [:], completionHandler: nil)
                 }
             }
         })
+         
+         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+         
+         alertPrompt.addAction(confirmAction)
+         alertPrompt.addAction(cancelAction)
+         
+         present(alertPrompt, animated: true, completion: nil)
+         **/
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        let secondViewController = QRWebViewController(nibName: nibName, bundle: nil)
+        if let url = URL(string: decodedURL) {
+            
+            if UIApplication.shared.canOpenURL(url) {
+                secondViewController.url = url;
+            }else{
+                secondViewController.url = URL(string: "https://www.google.com/search?q=" + decodedURL);
+            }
+            
+            self.present(secondViewController, animated: true, completion: nil)
+        }
         
-        alertPrompt.addAction(confirmAction)
-        alertPrompt.addAction(cancelAction)
         
-        present(alertPrompt, animated: true, completion: nil)
+        
     }
 
 }
